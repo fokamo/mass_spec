@@ -24,7 +24,8 @@ RED = pygame.Color(235, 91, 91)
 WINDOW_SIZE = (1000, 600)
 window = pygame.display.set_mode(WINDOW_SIZE)
 window.fill(BLUE)
-background = pygame.Surface(WINDOW_SIZE)
+# not quite sure what this does - need to check documentation
+# background = pygame.Surface(WINDOW_SIZE)
 
 def main():
     """Main runner function. Implements high-level logic"""
@@ -35,17 +36,18 @@ def main():
     # initially on start screen
     screen = START
 
-    exit_button = button.Button(500, 450, 50, 100, "Exit", RED)
+    exit_button = button.Button(450, 500, 100, 50, "Exit", RED)
 
+    # game loop
     while True:
-        print("hello")
         if screen == START:
             pygame.display.set_caption("Start")
 
-            exit_button.draw(background)
+            exit_button.draw(window)
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if exit_button.is_clicked(pygame.mouse.get_pos()):
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    if exit_button.is_clicked(mouse_x, mouse_y):
                         # must do both to exit properly
                         pygame.quit()
                         sys.exit()
