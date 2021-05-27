@@ -25,10 +25,10 @@ class Button(pygame.Rect):
         self.__text = BUTTON_FONT.render(text, True, FONT_COLOR, color)
         self.__color = color
 
-    def is_clicked(self, mouse_pos) -> bool:
+    def is_clicked(self, mouse_x: int, mouse_y: int) -> bool:
         """ Check for button clicks """
         
-        return pygame.Rect.collidepoint(mouse_pos[0], mouse_pos[1])
+        return super().collidepoint(mouse_x, mouse_y)
 
     def draw(self, screen: pygame.Surface) -> None:
         """ Draw the Button onto a given Surface """
