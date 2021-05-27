@@ -21,8 +21,16 @@ class Button(pygame.Rect):
         """
         
         super().__init__(left, top, width, height)
+        
         # make a text-surface to be blitted later
         self.__text = BUTTON_FONT.render(text, True, FONT_COLOR, color)
+        
+        # temporary text Rect, used to grab width/height for centering text
+        temp_rect = self.__text.get_rect()
+        self.__text_pos = (left + (width / 2) - (temp_rect.width / 2),
+                           top + (height / 2) - (temp_rect.height / 2)
+                           )
+                                       
         self.__color = color
 
     def is_clicked(self, mouse_x: int, mouse_y: int) -> bool:
@@ -35,4 +43,4 @@ class Button(pygame.Rect):
 
         # draw rectangle then text on top
         pygame.draw.rect(screen, self.__color, self)
-        screen.blit(self.__text, self)
+        screen.blit(self.__text, self.__text_pos)
