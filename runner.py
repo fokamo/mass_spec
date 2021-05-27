@@ -1,4 +1,4 @@
-""" massspec.runner.py
+""" runner.py
 
 Runs the simulator, dealing with the high-level logic
 
@@ -15,10 +15,10 @@ FPS = 30
 GameClock = pygame.time.Clock()
 
 # set up color constants
-BLUE = (38, 228, 235)
+BLUE = pygame.Color(38, 228, 235)
 
 # set up the display screen
-DISPLAYSURF = pygame.display.set_mode((300, 500))
+DISPLAYSURF = pygame.display.set_mode((1000, 600))
 DISPLAYSURF.fill(BLUE)
 
 def main():
@@ -45,5 +45,5 @@ def main():
     
 
 # call the "main: function if running this script
-def __name__ == "__main__":
+if __name__ == "__main__":
     main()
