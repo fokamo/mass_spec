@@ -11,15 +11,19 @@ import pygame, sys
 # required initialization step
 pygame.init()
 
+# the game clock & frame-rate
 FPS = 30
-GameClock = pygame.time.Clock()
+game_clock = pygame.time.Clock()
 
 # set up color constants
 BLUE = pygame.Color(38, 228, 235)
 
 # set up the display screen
-DISPLAYSURF = pygame.display.set_mode((1000, 600))
-DISPLAYSURF.fill(BLUE)
+WINDOW_SIZE = (1000, 600)
+window = pygame.display.set_mode(WINDOW_SIZE)
+window.fill(BLUE)
+# surface - not needed until something is drawn
+# background = pygame.Surgace(WINDOW_SIZE)
 
 def main():
     """Main runner function. Implements high-level logic"""
@@ -41,7 +45,7 @@ def main():
                     sys.exit()
         # update screen & tick clock
         pygame.display.update()
-        GameClock.tick(FPS)
+        game_clock.tick(FPS)
     
 
 # call the "main: function if running this script
