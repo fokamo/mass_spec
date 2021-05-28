@@ -1,13 +1,10 @@
 """ button.py: for a Button class """
 
 import pygame
-import text
+import text, fonts
 
 # required initialization step
 pygame.init()
-
-# font constants
-BUTTON_FONT = pygame.font.SysFont('calibri', 35)
 
 class Button(pygame.Rect):
     """A button which can draw itself and be clicked"""
@@ -23,7 +20,7 @@ class Button(pygame.Rect):
         super().__init__(left, top, width, height)
         
         # make a text-surface to be blitted later
-        self.__text = text.Text(txt, BUTTON_FONT, self, color)
+        self.__text = text.Text(txt, fonts.BUTTON_FONT, self, color)
         self.__color = color
 
     def is_clicked(self, mouse_x: int, mouse_y: int) -> bool:
