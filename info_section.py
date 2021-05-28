@@ -7,6 +7,7 @@ class InfoSection():
         self.title = title 
         self.info = info
         self.sources = sources
+        self.sources[0] = "Source(s): " + sources[0]
 
 def load_info_sections(filename: str):
     """ Loads data from a file into InfoSections """
