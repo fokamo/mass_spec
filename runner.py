@@ -64,10 +64,8 @@ def main():
 
     info_subscreen_title = None
     info_subscreens = info_section.load_info_sections('physics_info.txt')
-    print(info_subscreens[0].title)
-    print(info_subscreens[0].info)
-    print(info_subscreens[0].sources)
-    info_subscreen_info_area = pygame.Rect(200, 200, 600, 400)
+    info_area = pygame.Rect(200, 150, 600, 300)
+    sources_area = pygame.Rect(200, 450, 600, 50)
 
     info_subscreen_elems = [info_back_button, info_subscreen_title]
     
@@ -124,6 +122,15 @@ def main():
                                         WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
                         info_subscreen_elems = [info_back_button,
                                                 info_subscreen_title]
+                        for line in text.paragraphs_to_lines(
+                            info_area, info_subscreens[subscreen_num].info,
+                            fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
+                            info_subscreen_elems.append(line)
+                        for line in text.paragraphs_to_lines(
+                            sources_area,
+                            info_subscreens[subscreen_num].sources,
+                            fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
+                            info_subscreen_elems.append(line)
                         screen = INFO_SUBSCREEN
                         window.fill(BACKGROUND_COLOR)
                         
@@ -134,11 +141,6 @@ def main():
             # draw info subscreen elements
             for elem in info_subscreen_elems:
                 elem.draw(window)
-
-            text.blit_paragraphs(info_subscreen_info_area,
-                                 info_subscreens[subscreen_num].info,
-                                 fonts.PARAGRAPH_FONT, BACKGROUND_COLOR,
-                                 window)
 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
