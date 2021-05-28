@@ -17,13 +17,13 @@ def load_info_sections(filename: str):
         lines = file.readlines()
         
         for line in lines:
-            # different sections of data are separated by ;
-            data = line.split(";")
+            # different sections of data are separated by |
+            data = line.split("|")
             
             title = data[0]
-            # paragraphs are separated by ,
-            info = data[1].split(",")
-            sources = data[2].split(",")
+            # paragraphs are separated by ;;
+            info = data[1].split(";;")
+            sources = data[2].split(";;")
             
             info_sections.append(InfoSection(title, info, sources))
             
