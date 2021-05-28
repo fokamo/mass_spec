@@ -54,7 +54,7 @@ def main():
     start_screen_elems = (exit_button, sim_button, info_button, title, subtitle)
 
     info_back_button = button.Button(450, 500, 100, 50, "Back", BACK_COLOR)
-    mass_spec_intro_button = button.Button(200, 150, 200, 50, "Mass Spec 101",
+    mass_spec_intro_button = button.Button(125, 150, 300, 50, "Mass Spec 101",
                                            MOVE_FURTHER_COLOR)
     info_title = text.Text("The Science Behind It", fonts.TITLE_FONT,
                            pygame.Rect(0, 0, WINDOW_SIZE[0],
