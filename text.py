@@ -27,7 +27,7 @@ class Text():
             # get (top, left) position to center text with
             self.__pos = self.__center_text(area)
         else:
-            self.__pos = (0, 0)
+            self.__pos = (area.left, area.top)
         
     def __center_text(self, rect: pygame.Rect) -> (int, int):
         """ Helper function to center text
@@ -49,44 +49,47 @@ class Text():
         
         screen.blit(self.__text, self.__pos)
 
-def blit_paragraphs(area: pygame.Rect, paragraphs: list,
-                    font: pygame.font.Font, background_color: pygame.Color,
-                    screen: pygame.Surface):
-    """  Helper function which uses Text to write multiline paragraphs """
+def paragraphs_to_lines(area: pygame.Rect, paragraphs: list,
+                        font: pygame.font.Font, background_color: pygame.Color):
+    """  Helper function which converts paragraphs to line-by-line Texts """
     
     # 2D array: array per paragrah, with elements being words
     words = [paragraph.split(' ') for paragraph in paragraphs]
     
-    line_length = 0
-    line_height = 0
+    line_length, line_height = 0, 0
     y = area.top
+    lines = []
     
     for paragraph in words:
-        line = ''
+        cur_line = []
         for word in paragraph:
             # grab width & height of this word
             word_width, word_height = \
                         font.render(word, 0, TEXT_COLOR).get_size()
 
+            
+            if line_height < word_height:
+                line_height = word_height
+                
             # if this word would cause an overflow
             if line_length + word_width >= area.width:
                 # blit line so far
-                final_line = Text(line, font,
+                lines.append(Text(" ".join(cur_line), font,
                                   pygame.Rect(area.left, y,
                                               area.width, line_height),
-                                  background_color)
-                final_line.draw(screen)
+                                  background_color, False))                
                 # reset back down to next line
-                line_length = 0
                 y += line_height + 1
-                line = word
-            # otherwise just add the word to the line
-            else:
-                line += ' ' + word
-                if line_height < word_height:
-                    line_height = word_height
+                line_length, line_height = 0, 0
+                cur_line = []
+                
+            cur_line.append(word)
             line_length += word_width
-            line += word
-            
-        line_length - 0
+
+        lines.append(Text(" ".join(cur_line), font,
+                          pygame.Rect(area.left, y, area.width, line_height),
+                          background_color, False))
+        line_length = 0
         y += (2 * (line_height + 1))
+        
+    return lines
