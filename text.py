@@ -41,6 +41,6 @@ class Text():
                 )
 
     def draw(self, screen: pygame.Surface):
-        """ Blits the text onto the designated surface"""
+        """ Blits the text onto the designated surface """
         
         screen.blit(self.__text, self.__pos)
