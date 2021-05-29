@@ -7,7 +7,7 @@ Info has several sub-screens with information.
 """
 
 import pygame, sys
-import button, text, fonts, info_section
+import button, text, fonts, info_section, mass_spectrometer
 
 # required initialization step
 pygame.init()
@@ -30,6 +30,7 @@ def main():
 
     # flags used to indicate current screen
     START = 1
+    SIMULATOR = 2
     INFO = 3
     INFO_SUBSCREEN = 4
     subscreen_num = -1
@@ -53,22 +54,28 @@ def main():
 
     start_screen_elems = (exit_button, sim_button, info_button, title, subtitle)
 
-    info_back_button = button.Button(450, 500, 100, 50, "Back", BACK_COLOR)
+    back_button = button.Button(450, 500, 100, 50, "Back", BACK_COLOR)
     mass_spec_intro_button = button.Button(125, 150, 300, 50, "Mass Spec 101",
                                            MOVE_FURTHER_COLOR)
     info_title = text.Text("The Science Behind It", fonts.TITLE_FONT,
                            pygame.Rect(0, 0, WINDOW_SIZE[0],
                                        WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
 
-    info_screen_elems = (info_back_button, mass_spec_intro_button, info_title)
+    info_screen_elems = (back_button, mass_spec_intro_button, info_title)
 
     info_subscreen_title = None
     info_subscreens = info_section.load_info_sections('physics_info.txt')
     info_area = pygame.Rect(200, 150, 600, 300)
     sources_area = pygame.Rect(200, 450, 600, 50)
 
-    info_subscreen_elems = [info_back_button, info_subscreen_title]
-    
+    info_subscreen_elems = [back_button, info_subscreen_title]
+
+    mass_spec = mass_spectrometer.MassSpectrometer(
+        pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3, WINDOW_SIZE[1]),
+        1, 1, 0, 0, 0)
+
+    simulator_screen_elems = (back_button, mass_spec)
+   
     # game loop
     while True:
         if screen == START:
@@ -91,7 +98,23 @@ def main():
                         window.fill(BACKGROUND_COLOR)
                         
                     elif sim_button.is_clicked(mouse_x, mouse_y):
-                        print("simulation screen")
+                        screen = SIMULATOR
+                        window.fill(BACKGROUND_COLOR)
+
+        elif screen == SIMULATOR:
+            pygame.display.set_caption("Simulator")
+
+            # draw simulation screen elements
+            for elem in simulator_screen_elems:
+                elem.draw(window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    if back_button.is_clicked(mouse_x, mouse_y):
+                        screen = INFO
+                        subscreen_num = -1
+                        window.fill(BACKGROUND_COLOR)
                         
         elif screen == INFO:
             pygame.display.set_caption("Info")
@@ -105,7 +128,7 @@ def main():
                     mouse_x, mouse_y = pygame.mouse.get_pos()
 
                     # back button goes to start screen
-                    if info_back_button.is_clicked(mouse_x, mouse_y):
+                    if back_button.is_clicked(mouse_x, mouse_y):
                         screen = START
                         window.fill(BACKGROUND_COLOR)
                         
@@ -120,7 +143,7 @@ def main():
                             fonts.TITLE_FONT,
                             pygame.Rect(0, 0, WINDOW_SIZE[0],
                                         WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
-                        info_subscreen_elems = [info_back_button,
+                        info_subscreen_elems = [back_button,
                                                 info_subscreen_title]
                         for line in text.paragraphs_to_lines(
                             info_area, info_subscreens[subscreen_num].info,
@@ -138,6 +161,8 @@ def main():
         elif screen == INFO_SUBSCREEN:
             pygame.display.set_caption(info_subscreens[subscreen_num].title)
 
+            mass_spec.update()
+
             # draw info subscreen elements
             for elem in info_subscreen_elems:
                 elem.draw(window)
@@ -145,7 +170,7 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
-                    if info_back_button.is_clicked(mouse_x, mouse_y):
+                    if back_button.is_clicked(mouse_x, mouse_y):
                         screen = INFO
                         subscreen_num = -1
                         window.fill(BACKGROUND_COLOR)
