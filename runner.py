@@ -72,7 +72,7 @@ def main():
 
     mass_spec = mass_spectrometer.MassSpectrometer(
         pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3, WINDOW_SIZE[1]),
-        1, 1, 0, 0, 0)
+        1, 1, 1, 0, 0)
 
     simulator_screen_elems = (back_button, mass_spec)
    
@@ -104,6 +104,8 @@ def main():
         elif screen == SIMULATOR:
             pygame.display.set_caption("Simulator")
 
+            window.fill(BACKGROUND_COLOR)
+
             # draw simulation screen elements
             for elem in simulator_screen_elems:
                 elem.draw(window)
@@ -112,12 +114,12 @@ def main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     if back_button.is_clicked(mouse_x, mouse_y):
-                        screen = INFO
-                        subscreen_num = -1
+                        screen = START
                         window.fill(BACKGROUND_COLOR)
                         
         elif screen == INFO:
             pygame.display.set_caption("Info")
+
 
             # draw info screen elements
             for elem in info_screen_elems:
@@ -160,8 +162,6 @@ def main():
 
         elif screen == INFO_SUBSCREEN:
             pygame.display.set_caption(info_subscreens[subscreen_num].title)
-
-            mass_spec.update()
 
             # draw info subscreen elements
             for elem in info_subscreen_elems:
