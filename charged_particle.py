@@ -20,21 +20,23 @@ class ChargedParticle():
         self.__stopped = False
         self.set_charge(charge)
 
-    def move(self, mag_field: int, elec_field: int):
+    def move(self, e_field: int, mag_field: int):
         """ move the charged particle one frame's worth """
-        self.__pos = (self.__pos[0] + self.__velocity[0],
+
+        if not self.__stopped:
+            self.__pos = (self.__pos[0] + self.__velocity[0],
                       self.__pos[1] + self.__velocity[1])
 
     def stop(self):
         self.__stopped = True
 
     def draw(self, screen: pygame.Surface):
-        pygame.draw.circle(screen, self.__color, pos, RADIUS)
+        pygame.draw.circle(screen, self.__color, self.__pos, RADIUS)
 
     def erase(self, screen: pygame.Surface, background_color: pygame.Color):
-        pygame.draw.circle(screen, background_color, pos, RADIUS)
+        pygame.draw.circle(screen, background_color, self.__pos, RADIUS)
 
-    def set_charge(self, new_chage: int):
+    def set_charge(self, new_charge: int):
         self.__charge = new_charge
         if new_charge > 0:
             self.__color = POSITIVE_COLOR
