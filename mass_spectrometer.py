@@ -6,7 +6,7 @@ import charged_particle
 # required initialization step
 pygame.init()
 
-WALL_THICKNESS = 4
+WALL_THICKNESS = 10
 WALL_COLOR = pygame.Color(148, 134, 106)
 
 class MassSpectrometer():
@@ -45,6 +45,8 @@ class MassSpectrometer():
         
         for wall in self.__walls:
             pygame.draw.rect(screen, WALL_COLOR, wall)
+            if self.__particle.is_collision(wall):
+                self.__particle.stop()
 
     def reset_particle(self):
         self.__particle = charged_particle.ChargedParticle(
