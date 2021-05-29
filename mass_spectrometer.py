@@ -37,9 +37,8 @@ class MassSpectrometer():
                 upper_vertical, lower_vertical)
 
     def draw(self, screen: pygame.Surface):
+        self.__particle.move(self.e_field, self.mag_field)
         self.__particle.draw(screen)
+        
         for wall in self.__walls:
             pygame.draw.rect(screen, WALL_COLOR, wall)
-
-    def update(self):
-        self.__particle.move(e_field, mag_field)
