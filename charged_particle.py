@@ -33,9 +33,6 @@ class ChargedParticle():
     def draw(self, screen: pygame.Surface):
         pygame.draw.circle(screen, self.__color, self.__pos, RADIUS)
 
-    def erase(self, screen: pygame.Surface, background_color: pygame.Color):
-        pygame.draw.circle(screen, background_color, self.__pos, RADIUS)
-
     def set_charge(self, new_charge: int):
         self.__charge = new_charge
         if new_charge > 0:
