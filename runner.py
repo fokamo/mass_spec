@@ -39,12 +39,15 @@ def main():
     screen = START
     window.fill(BACKGROUND_COLOR)
 
-    # set up UI elements
+    # start screen elements
+    
+    # buttons which navigate to other screens
     exit_button = button.Button(450, 500, 100, 50, "Exit", BACK_COLOR)
     sim_button = button.Button(200, 300, 200, 50, "Simulation",
                                MOVE_FURTHER_COLOR)
     info_button = button.Button(600, 300, 200, 50, "Science",
                                 MOVE_FURTHER_COLOR)
+    # title & subtitle
     title = text.Text("Mass Spectrometer", fonts.TITLE_FONT,
                       pygame.Rect(0, 0, WINDOW_SIZE[0], WINDOW_SIZE[1] / 2),
                       BACKGROUND_COLOR)
@@ -54,27 +57,36 @@ def main():
 
     start_screen_elems = (exit_button, sim_button, info_button, title, subtitle)
 
+
+    # main info screen elements
+    
     back_button = button.Button(450, 500, 100, 50, "Back", BACK_COLOR)
     mass_spec_intro_button = button.Button(125, 150, 300, 50, "Mass Spec 101",
                                            MOVE_FURTHER_COLOR)
+    # buttons which lead to info subscreens
     info_title = text.Text("The Science Behind It", fonts.TITLE_FONT,
                            pygame.Rect(0, 0, WINDOW_SIZE[0],
                                        WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
 
     info_screen_elems = (back_button, mass_spec_intro_button, info_title)
 
-    info_subscreen_title = None
+
+    # info subscreen elements
     info_subscreens = info_section.load_info_sections('physics_info.txt')
+    # placeholders elements for a particular subscreen
+    info_subscreen_title = None
     info_area = pygame.Rect(200, 150, 600, 300)
     sources_area = pygame.Rect(200, 450, 600, 50)
 
     info_subscreen_elems = [back_button, info_subscreen_title]
 
+    # simulation screen elements
     mass_spec = mass_spectrometer.MassSpectrometer(
         pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3, WINDOW_SIZE[1]),
         1, 1, 1, 0, 0)
+    reset_button = button.Button(50, 50, 100, 50, "Reset", MOVE_FURTHER_COLOR)
 
-    simulator_screen_elems = (back_button, mass_spec)
+    simulator_screen_elems = (back_button, mass_spec, reset_button)
    
     # game loop
     while True:
@@ -116,6 +128,8 @@ def main():
                     if back_button.is_clicked(mouse_x, mouse_y):
                         screen = START
                         window.fill(BACKGROUND_COLOR)
+                    if reset_button.is_clicked(mouse_x, mouse_y):
+                        mass_spec.reset_particle()
                         
         elif screen == INFO:
             pygame.display.set_caption("Info")
