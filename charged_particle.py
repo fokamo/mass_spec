@@ -18,6 +18,8 @@ class ChargedParticle():
         self.__velocity = (x_velocity, 0)
         self.__pos = pos
         self.__stopped = False
+        self.__rect = pygame.Rect(pos[0] - RADIUS, pos[1] - RADIUS,
+                                  RADIUS * 2, RADIUS * 2)
         self.set_charge(charge)
 
     def move(self, e_field: int, mag_field: int):
@@ -25,7 +27,15 @@ class ChargedParticle():
 
         if not self.__stopped:
             self.__pos = (self.__pos[0] + self.__velocity[0],
-                      self.__pos[1] + self.__velocity[1])
+                          self.__pos[1] + self.__velocity[1])
+            self.__rect = pygame.Rect(self.__pos[0] - RADIUS,
+                                      self.__pos[1] - RADIUS,
+                                      RADIUS * 2, RADIUS * 2)
+
+            electric_force = e_field * self.__charge
+            acceleration = (0, electric_force / self.__mass)
+            self.__velocity = (self.__velocity[0] + acceleration[0],
+                           self.__velocity[1] + acceleration[1])
 
     def stop(self):
         self.__stopped = True
@@ -47,3 +57,6 @@ class ChargedParticle():
             self.__mass = new_mass
         else:
             raise ValueError("Mass must be positive")
+
+    def is_collision(self, rect: pygame.Rect):
+        return rect.colliderect(self.__rect)
