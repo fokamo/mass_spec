@@ -34,22 +34,28 @@ class ChargedParticle():
                                       RADIUS * 2, RADIUS * 2)
 
             electric_force = e_field * self.__charge
-            print("e", electric_force)
             magnetic_force = self.__calc_mag_force(mag_field)
             total_force = (magnetic_force[0],
                            electric_force + magnetic_force[1])
             acceleration = (total_force[0] / self.__mass,
                             total_force[1] / self.__mass)
+            if acceleration != (0, 0):
+                print(acceleration)
             self.__velocity = (self.__velocity[0] + acceleration[0],
-                           self.__velocity[1] + acceleration[1])
+                               self.__velocity[1] + acceleration[1])
 
     def __calc_mag_force(self, mag_field: int):
         v_x, v_y = self.__velocity
-        theta = math.tan(v_y / v_x) + \
-                (180 * ((mag_field * self.__charge > 0) - 0.5))
-        total_v = math.sqrt((v_y * v_y) + (v_x * v_x))
+        if v_x != 0:
+            theta = math.atan(v_y / v_x)
+        elif v_y > 0:
+            theta = -1 * (math.pi / 2)
+        else:
+            theta = math.pi / 2
+        theta += (math.pi * (mag_field * self.__charge > 0)) - (math.pi / 2)
+        print(theta)
+        total_v = (int) ((100 * math.sqrt((v_y * v_y) + (v_x * v_x))) / 100)
         total_f = math.fabs(self.__charge * total_v * mag_field)
-        print("m", total_f)
         return total_f * math.cos(theta), total_f * math.sin(theta)
 
     def stop(self):
@@ -75,3 +81,6 @@ class ChargedParticle():
 
     def is_collision(self, rect: pygame.Rect):
         return rect.colliderect(self.__rect)
+
+    def get_pos(self):
+        return self.__pos
