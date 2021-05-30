@@ -1,5 +1,6 @@
 """ charged_particle.py: for a ChargedParticle class """
 
+import math
 import pygame
 
 # required initialization step
@@ -33,9 +34,23 @@ class ChargedParticle():
                                       RADIUS * 2, RADIUS * 2)
 
             electric_force = e_field * self.__charge
-            acceleration = (0, electric_force / self.__mass)
+            print("e", electric_force)
+            magnetic_force = self.__calc_mag_force(mag_field)
+            total_force = (magnetic_force[0],
+                           electric_force + magnetic_force[1])
+            acceleration = (total_force[0] / self.__mass,
+                            total_force[1] / self.__mass)
             self.__velocity = (self.__velocity[0] + acceleration[0],
                            self.__velocity[1] + acceleration[1])
+
+    def __calc_mag_force(self, mag_field: int):
+        v_x, v_y = self.__velocity
+        theta = math.tan(v_y / v_x) + \
+                (180 * ((mag_field * self.__charge > 0) - 0.5))
+        total_v = math.sqrt((v_y * v_y) + (v_x * v_x))
+        total_f = math.fabs(self.__charge * total_v * mag_field)
+        print("m", total_f)
+        return total_f * math.cos(theta), total_f * math.sin(theta)
 
     def stop(self):
         self.__stopped = True
