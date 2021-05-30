@@ -78,8 +78,8 @@ class ChargedParticle():
 
         # use L/R HR to move in correct perpendicular direction
         theta -= math.pi / 2
-        # calculate current velocity (round since that reflects normal usage)
-        total_v = (int) ((100 * math.sqrt((v_y * v_y) + (v_x * v_x))) / 100)
+        # calculate current velocity
+        total_v = math.sqrt((v_y * v_y) + (v_x * v_x))
         # F_M = qvB
         total_f = self.__charge * total_v * mag_field
 
