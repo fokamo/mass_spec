@@ -40,7 +40,11 @@ class MassSpectrometer():
                 upper_vertical, lower_vertical)
 
     def draw(self, screen: pygame.Surface):
-        self.__particle.move(self.e_field, self.mag_field)
+        if (self.__particle.get_pos()[0] >
+            self.__area.left + (self.__area.width / 2)):
+            self.__particle.move(0, self.mag_field)
+        else:
+            self.__particle.move(self.e_field, self.mag_field)
         self.__particle.draw(screen)
         
         for wall in self.__walls:
