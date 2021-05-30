@@ -83,7 +83,7 @@ def main():
     # simulation screen elements
     mass_spec = mass_spectrometer.MassSpectrometer(
         pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3, WINDOW_SIZE[1]),
-        10, 0.5, 5, 5, -1)
+        20, 1, 5, 5, -1) # arbitrarily chosen values for testing purposes
     reset_button = button.Button(50, 50, 100, 50, "Reset", MOVE_FURTHER_COLOR)
 
     simulator_screen_elems = (back_button, mass_spec, reset_button)
@@ -93,22 +93,25 @@ def main():
         if screen == START:
             pygame.display.set_caption("Start")
 
-            # draw start screen elements
             for elem in start_screen_elems:
                 elem.draw(window)
                 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
+
+                    # exit button quits simulation
                     if exit_button.is_clicked(mouse_x, mouse_y):
                         # must do both to exit properly
                         pygame.quit()
                         sys.exit()
-                        
+
+                    # info button goes to info screen
                     elif info_button.is_clicked(mouse_x, mouse_y):
                         screen = INFO
                         window.fill(BACKGROUND_COLOR)
-                        
+
+                    # simulation button goes to simulation screen
                     elif sim_button.is_clicked(mouse_x, mouse_y):
                         screen = SIMULATOR
                         mass_spec.reset_particle()
@@ -117,26 +120,28 @@ def main():
         elif screen == SIMULATOR:
             pygame.display.set_caption("Simulator")
 
+            # erase before drawing, so that particle doesn't drag when moving
             window.fill(BACKGROUND_COLOR)
 
-            # draw simulation screen elements
             for elem in simulator_screen_elems:
                 elem.draw(window)
 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
+
+                    # back button goes to start screen
                     if back_button.is_clicked(mouse_x, mouse_y):
                         screen = START
                         window.fill(BACKGROUND_COLOR)
+
+                    # reset button resets particle
                     if reset_button.is_clicked(mouse_x, mouse_y):
                         mass_spec.reset_particle()
                         
         elif screen == INFO:
             pygame.display.set_caption("Info")
 
-
-            # draw info screen elements
             for elem in info_screen_elems:
                 elem.draw(window)
 
@@ -155,6 +160,7 @@ def main():
 
                     # if a subscreen has been set, set it up 
                     if subscreen_num != -1:
+                        # set up title
                         info_subscreen_title = text.Text(
                             info_subscreens[subscreen_num].title,
                             fonts.TITLE_FONT,
@@ -162,6 +168,8 @@ def main():
                                         WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
                         info_subscreen_elems = [back_button,
                                                 info_subscreen_title]
+
+                        # add info paragraphs & sources lines to elems
                         for line in text.paragraphs_to_lines(
                             info_area, info_subscreens[subscreen_num].info,
                             fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
@@ -171,6 +179,7 @@ def main():
                             info_subscreens[subscreen_num].sources,
                             fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
                             info_subscreen_elems.append(line)
+                            
                         screen = INFO_SUBSCREEN
                         window.fill(BACKGROUND_COLOR)
                         
@@ -178,13 +187,14 @@ def main():
         elif screen == INFO_SUBSCREEN:
             pygame.display.set_caption(info_subscreens[subscreen_num].title)
 
-            # draw info subscreen elements
             for elem in info_subscreen_elems:
                 elem.draw(window)
 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
+
+                    # back button goes to info screen
                     if back_button.is_clicked(mouse_x, mouse_y):
                         screen = INFO
                         subscreen_num = -1
