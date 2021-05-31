@@ -86,11 +86,23 @@ def main():
         20, 1, 5, 5, -1) # arbitrarily chosen values for testing purposes
     reset_button = button.Button(50, 50, 100, 50, "Reset", MOVE_FURTHER_COLOR)
 
-    mass_slider = slider.Slider("Mass", (10, 50),
-                                pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, 150),
+    slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
+    mass_slider = slider.Slider("Mass", (10, 50), slider_area,
                                 BACKGROUND_COLOR, 20)
+    slider_area.top += slider_area.height
+    velocity_slider = slider.Slider("i. Velocity", (2, 10), slider_area,
+                                    BACKGROUND_COLOR, 5)
+    slider_area.top += slider_area.height
+    e_field_slider = slider.Slider("E Field", (-5, 5), slider_area,
+                                   BACKGROUND_COLOR, 5)
+    slider_area.top += slider_area.height
+    mag_field_slider = slider.Slider("Mag Field", (-5, 5), slider_area,
+                                     BACKGROUND_COLOR, -1)
+                                   
 
-    simulator_screen_elems = (back_button, mass_spec, reset_button, mass_slider)
+    simulator_screen_elems = (back_button, mass_spec, reset_button, mass_slider,
+                              velocity_slider, e_field_slider,
+                              mag_field_slider)
    
     # game loop
     while True:
@@ -140,12 +152,25 @@ def main():
                         window.fill(BACKGROUND_COLOR)
 
                     # reset button resets particle
-                    if reset_button.is_clicked(mouse_x, mouse_y):
+                    elif reset_button.is_clicked(mouse_x, mouse_y):
                         mass_spec.reset_particle()
 
-                    if mass_slider.is_clicked(mouse_x, mouse_y):
+                    elif mass_slider.is_clicked(mouse_x, mouse_y):
                         mass_spec.set_mass(
                             mass_slider.handle_click(mouse_x, mouse_y))
+
+                    elif velocity_slider.is_clicked(mouse_x, mouse_y):
+                        mass_spec.set_initial_x_velocity(
+                            velocity_slider.handle_click(mouse_x, mouse_y))
+
+                    elif e_field_slider.is_clicked(mouse_x, mouse_y):
+                        mass_spec.e_field = \
+                            e_field_slider.handle_click(mouse_x, mouse_y)
+
+                    elif mag_field_slider.is_clicked(mouse_x, mouse_y):
+                        mass_spec.mag_field = \
+                            mag_field_slider.handle_click(mouse_x, mouse_y)
+                    
                         
         elif screen == INFO:
             pygame.display.set_caption("Info")
