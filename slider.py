@@ -18,7 +18,7 @@ class Slider():
         if val_range[0] > val_range[1]:
             raise ValueError('First (min) must be greater than second (max)')
 
-        self.__name = text.Text(name, fonts.TITLE_FONT,
+        self.__name = text.Text(name, fonts.SUBTITLE_FONT,
                                 pygame.Rect(area.left, area.top, area.width,
                                             area.height / 2), background_color)
         self.__slide = pygame.Rect(area.left, area.top + (area.height / 2),
