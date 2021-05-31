@@ -15,9 +15,9 @@ class MassSpectrometer():
                  initial_x_velocity: int, e_field: int, mag_field: int):
         # save information about particle
         self.__area = area
-        self.__mass = mass
+        self.set_mass(mass)
         self.__charge = charge
-        self.__initial_x_velocity = initial_x_velocity
+        self.set_initial_x_velocity(initial_x_velocity)
         self.__particle_start_pos = (charged_particle.RADIUS, area.height / 2)
 
         # generates new particle
@@ -84,9 +84,23 @@ class MassSpectrometer():
             self.__particle_start_pos)
 
     def set_mass(self, new_mass: int):
-        """ Update mass, checking to make sure new value is legal """
+        """ Update mass,
+
+        Checks to make sure new value is legal
+        """
         
         if new_mass > 0:
             self.__mass = new_mass
         else:
             raise ValueError("Mass must be positive")
+
+    def set_initial_x_velocity(self, new_initial_x_velocity: int):
+        """ Update initial x velocity
+
+        Checks to make sure new value is legal
+        """
+
+        if new_initial_x_velocity > 0:
+            self.__initial_x_velocity = new_initial_x_velocity
+        else:
+            raise ValueError("Initial x velocity must be positive")
