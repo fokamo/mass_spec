@@ -87,7 +87,7 @@ def main():
     reset_button = button.Button(50, 50, 100, 50, "Reset", MOVE_FURTHER_COLOR)
 
     mass_slider = slider.Slider("Mass", (10, 50),
-                                pygame.Rect(WINDOW_SIZE[0] - 150, 0, 150, 150),
+                                pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, 150),
                                 BACKGROUND_COLOR, 20)
 
     simulator_screen_elems = (back_button, mass_spec, reset_button, mass_slider)
@@ -142,6 +142,10 @@ def main():
                     # reset button resets particle
                     if reset_button.is_clicked(mouse_x, mouse_y):
                         mass_spec.reset_particle()
+
+                    if mass_slider.is_clicked(mouse_x, mouse_y):
+                        mass_spec.set_mass(
+                            mass_slider.handle_click(mouse_x, mouse_y))
                         
         elif screen == INFO:
             pygame.display.set_caption("Info")
