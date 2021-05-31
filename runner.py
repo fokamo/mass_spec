@@ -86,7 +86,11 @@ def main():
         20, 1, 5, 5, -1) # arbitrarily chosen values for testing purposes
     reset_button = button.Button(50, 50, 100, 50, "Reset", MOVE_FURTHER_COLOR)
 
+    # set up sliders (annonyingly complicated... may try to simplify later)
     slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
+    charge_slider = slider.DiscreteSlider("Charge", (-2, 2), slider_area,
+                                          BACKGROUND_COLOR, 1)
+    slider_area.top += slider_area.height
     mass_slider = slider.Slider("Mass", (10, 50), slider_area,
                                 BACKGROUND_COLOR, 20)
     slider_area.top += slider_area.height
@@ -100,7 +104,8 @@ def main():
                                      BACKGROUND_COLOR, -1)
                                    
 
-    simulator_screen_elems = (back_button, mass_spec, reset_button, mass_slider,
+    simulator_screen_elems = (back_button, mass_spec, reset_button,
+                              charge_slider, mass_slider,
                               velocity_slider, e_field_slider,
                               mag_field_slider)
    
@@ -154,6 +159,10 @@ def main():
                     # reset button resets particle
                     elif reset_button.is_clicked(mouse_x, mouse_y):
                         mass_spec.reset_particle()
+
+                    elif charge_slider.is_clicked(mouse_x, mouse_y):
+                        mass_spec.set_charge(
+                            charge_slider.handle_click(mouse_x, mouse_y))
 
                     elif mass_slider.is_clicked(mouse_x, mouse_y):
                         mass_spec.set_mass(
