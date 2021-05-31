@@ -7,7 +7,7 @@ Info has several sub-screens with information.
 """
 
 import pygame, sys
-import button, text, fonts, info_section, mass_spectrometer
+import button, text, fonts, info_section, mass_spectrometer, slider
 
 # required initialization step
 pygame.init()
@@ -86,7 +86,11 @@ def main():
         20, 1, 5, 5, -1) # arbitrarily chosen values for testing purposes
     reset_button = button.Button(50, 50, 100, 50, "Reset", MOVE_FURTHER_COLOR)
 
-    simulator_screen_elems = (back_button, mass_spec, reset_button)
+    mass_slider = slider.Slider("Mass", (10, 50),
+                                pygame.Rect(WINDOW_SIZE[0] - 150, 0, 150, 150),
+                                BACKGROUND_COLOR, 20)
+
+    simulator_screen_elems = (back_button, mass_spec, reset_button, mass_slider)
    
     # game loop
     while True:
