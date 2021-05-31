@@ -6,6 +6,8 @@ import text, fonts
 # required initialization step
 pygame.init()
 
+TICKS = 5
+
 SLIDER_COLOR = pygame.Color(244, 248, 95)
 CIRCLE_COLOR = pygame.Color(146, 199, 14)
 
@@ -24,6 +26,7 @@ class Slider():
         self.__circle_radius = area.height / 8
         self.__range = val_range
         self.__set_value(initial_value)
+        self.__labels = self.__generate_lables(background_color)
 
     def __set_value(self, new_val: int):
         min_val, max_val = self.__range
@@ -34,11 +37,27 @@ class Slider():
                              self.__slide.top + (self.__slide.width / 2))
         self.__value = new_val
 
+    def __generate_labels(self, background_color: pygame.Color):
+        lables = []
+        val_jump = self.__range[1] - self.__range[0]) / (TICKS - 1)
+        x_jump = self.__slide.width / (TICKS - 1)
+        for i in range(TICKS - 1):
+            labels.append(get_text_by_center(
+                (self.__slide.left + (x_jump * i), self.slide.bottom + 5),
+                (str) (self.__range[0] + (val_jump * i)), fonts.NUMBER_FONT,
+                background_color))
+        return labels
+                
+
     def draw(self, screen: pygame.Surface):
         self.__name.draw(screen)
         pygame.draw.rect(screen, SLIDER_COLOR, self.__slide)
         pygame.draw.circle(screen, CIRCLE_COLOR, self.__circle_pos,
                            self.__circle_radius)
+        for label in self.__labels:
+            label.draw(screen)
 
     def handle_click(self, mouse_x: int, mouse_y: int):
         """ Handle a click: if on the slider, move the circle & update value """
+        if self.__slide.collidepoint(mouse_x, mouse_y):
+            
