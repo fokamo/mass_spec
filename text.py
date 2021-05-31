@@ -65,8 +65,7 @@ def paragraphs_to_lines(area: pygame.Rect, paragraphs: list,
         for word in paragraph:
             # grab width & height of this word
             word_width, word_height = \
-                        font.render(word, 0, TEXT_COLOR).get_size()
-
+                        font.render(word, True, TEXT_COLOR).get_size()
             
             if line_height < word_height:
                 line_height = word_height
@@ -93,3 +92,11 @@ def paragraphs_to_lines(area: pygame.Rect, paragraphs: list,
         y += (2 * (line_height + 1))
         
     return lines
+
+def get_text_by_center(center: (int, int), text: str, font: pygame.font.Font,
+                       background_color: pygame.Color):
+    word_width, word_height = font.render(text, True, TEXT_COLOR).get_size()
+    return Text(text, font, pygame.Rect(center[0] - (word_width / 2),
+                                        center[1] - (word_height / 2),
+                                        word_width, word_height),
+                background_color)
