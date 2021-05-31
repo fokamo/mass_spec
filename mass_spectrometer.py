@@ -71,9 +71,22 @@ class MassSpectrometer():
             if self.__particle.is_collision(wall):
                 self.__particle.stop()
 
+        particle_y = self.__particle.get_pos()[1]
+        if (particle_y < self.__area.top or
+            particle_y > self.__area.top + self.__area.height):
+            self.__particle.stop()
+
     def reset_particle(self):
         """ Resets particle back to start position """
         
         self.__particle = charged_particle.ChargedParticle(
             self.__mass, self.__charge, self.__initial_x_velocity,
             self.__particle_start_pos)
+
+    def set_mass(self, new_mass: int):
+        """ Update mass, checking to make sure new value is legal """
+        
+        if new_mass > 0:
+            self.__mass = new_mass
+        else:
+            raise ValueError("Mass must be positive")
