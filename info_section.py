@@ -23,7 +23,7 @@ class InfoSection():
         
         self.title = title 
         self.info = info
-        self.source = "Source: " + source
+        self.source = 'Source: ' + source
 
 def load_info_sections(filename: str) -> list:
     """Load data from a file into InfoSections.
@@ -43,11 +43,11 @@ def load_info_sections(filename: str) -> list:
             line.strip()
             
             # different sections of data are separated by |
-            data = line.split("|")
+            data = line.split('|')
             
             title = data[0]
             # paragraphs are separated by ;;
-            info = data[1].split(";;")
+            info = data[1].split(';;')
             sources = data[2]
 
             # create InfoSection based off data
