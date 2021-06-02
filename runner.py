@@ -116,20 +116,20 @@ def main():
 
     # set up sliders (annonyingly complicated... may try to simplify later)
     slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
-    charge_slider = slider.DiscreteSlider("Charge", (-2, 2), slider_area,
-                                          BACKGROUND_COLOR, 1)
+    charge_slider = slider.DiscreteSlider("Charge", (-2, 2), 1, slider_area,
+                                          BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    mass_slider = slider.Slider("Mass", (10, 50), slider_area,
-                                BACKGROUND_COLOR, 20)
+    mass_slider = slider.Slider("Mass", (10, 50), 20, slider_area,
+                                BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    velocity_slider = slider.Slider("i. Velocity", (2, 10), slider_area,
-                                    BACKGROUND_COLOR, 5)
+    velocity_slider = slider.Slider("i. Velocity", (2, 10), 5, slider_area,
+                                    BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    e_field_slider = slider.Slider("E Field", (-5, 5), slider_area,
-                                   BACKGROUND_COLOR, 5)
+    e_field_slider = slider.Slider("E Field", (-5, 5), 5, slider_area,
+                                   BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    mag_field_slider = slider.Slider("Mag Field", (-5, 5), slider_area,
-                                     BACKGROUND_COLOR, -1)
+    mag_field_slider = slider.Slider("Mag Field", (-5, 5), -1, slider_area,
+                                     BACKGROUND_COLOR)
                                    
 
     simulator_screen_elems = (back_button, mass_spec, reset_button,
