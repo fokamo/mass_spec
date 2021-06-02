@@ -241,8 +241,8 @@ def main():
 
                         # add info paragraphs & sources lines to elems
                         for line in text.paragraphs_to_lines(
-                            info_area, info_subscreens[subscreen_num].info,
-                            fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
+                            info_subscreens[subscreen_num].info,
+                            fonts.PARAGRAPH_FONT, info_area, BACKGROUND_COLOR):
                             info_subscreen_elems.append(line)
 
                         info_subscreen_elems.append(text.Text(
