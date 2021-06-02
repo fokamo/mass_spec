@@ -21,19 +21,16 @@ class Button(pygame.Rect):
     In all cases the origin (0, 0) is the top left corner
     """
 
-    def __init__(self, left: int, top: int, width: int, height: int,
-                 txt: str, color: pygame.Color) -> None:
+    def __init__(self, txt: str, area: pygame.Rect, color: pygame.Color
+                 ) -> None:
         """Initialize a Button.
 
-        left -- the x coordinate of the button's top left corner
-        top -- the y coordinate of the button's top left corner
-        width -- the width of the button in pixels
-        height -- the height of the button in pixels
         text -- label on Button
+        area -- Rect where the Button should go
         color -- background color of the Button
         """
         
-        super().__init__(left, top, width, height)
+        super().__init__(area)
         
         # make a text-surface to be blitted later
         self._text = text.Text(txt, fonts.BUTTON_FONT, self, color)
