@@ -1,4 +1,10 @@
-""" text.py: for a Text class """
+"""text.py: for a Text class
+
+Text class -- for easy textbox handling
+TEXT_COLOR -- color that all text will be in
+paragraphs_to_lines -- convert paragraphs to line-by-line Texts
+get_text_by_center -- generate a text box which is centered on the given point
+"""
 
 import pygame
 
