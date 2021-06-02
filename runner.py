@@ -94,7 +94,7 @@ def main():
     # placeholders elements for a particular subscreen
     info_subscreen_title = None
     info_area = pygame.Rect(200, 150, 600, 300)
-    sources_area = pygame.Rect(200, 450, 600, 50)
+    source_area = pygame.Rect(200, 450, 600, 50)
 
     info_subscreen_elems = [back_button, info_subscreen_title]
 
@@ -235,9 +235,10 @@ def main():
                             fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
                             info_subscreen_elems.append(line)
 
-                        info_subscreen_elems.append(text.Text(sources_area,
+                        info_subscreen_elems.append(text.Text(
                                      info_subscreens[subscreen_num].source,
-                                     fonts.PARAGRAPH_FONT, BACKGROUND_COLOR))
+                                     fonts.PARAGRAPH_FONT, source_area,
+                                     BACKGROUND_COLOR))
                             
                         screen = INFO_SUBSCREEN
                         window.fill(BACKGROUND_COLOR)
