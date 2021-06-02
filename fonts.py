@@ -1,4 +1,4 @@
-""" fonts.py: a central file of fonts
+"""fonts.py: a central file of fonts
 
 Fonts available:
 TITLE_FONT, SUBTITLE_FONT (both inkfree, subtitle is smaller and italicized)
