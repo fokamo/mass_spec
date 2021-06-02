@@ -72,14 +72,14 @@ def paragraphs_to_lines(area: pygame.Rect, paragraphs: list,
                 
             # if this word would cause an overflow
             if line_length + word_width >= area.width:
-                # blit line so far
+                # add line so far
                 lines.append(Text(" ".join(cur_line), font,
                                   pygame.Rect(area.left, y,
                                               area.width, line_height),
                                   background_color, False))                
                 # reset back down to next line
                 y += line_height + 1
-                line_length, line_height = 0, 0
+                line_length, line_height = 0, word_height
                 cur_line = []
                 
             cur_line.append(word)
@@ -88,9 +88,9 @@ def paragraphs_to_lines(area: pygame.Rect, paragraphs: list,
         lines.append(Text(" ".join(cur_line), font,
                           pygame.Rect(area.left, y, area.width, line_height),
                           background_color, False))
-        line_length = 0
         y += (2 * (line_height + 1))
-        
+        line_length, line_height = 0, word_height
+
     return lines
 
 def get_text_by_center(center: (int, int), text: str, font: pygame.font.Font,
