@@ -9,94 +9,144 @@ pygame.init()
 TEXT_COLOR = pygame.Color(0, 0, 0)
 
 class Text():
-    """A textbox which draws itself in a particular area"""
+    """A class to represent a textbox.
+
+    Attributes:
+    _text -- Surface with text on it
+    _pos -- the (left, top) corner of the textbox
+
+    Methods:
+    draw -- draws the Text on a Surface
+    """
 
     def __init__(self, text: str, font: pygame.font.Font,
                  area: pygame.Rect, background_color: pygame.Color,
-                 centered=True):
-        """ Initialize a Text
+                 centered=True) -> None:
+        """Initialize a Text.
 
-        text is the string to display, font is the Font the text should be in
-        area is the rectangle the text should be centered & displayed in
-        background_color is the expected background color for the font
+        text -- string to display
+        font -- Font the text is to be displayed in
+        area -- Rect where the text should go
+        background_color -- expected background Color for this text
+        centered -- whether the text should center itself in its box
+                 -- defaults to True
         """
         
         # create the needed text-surface
-        self.__text = font.render(text, True, TEXT_COLOR, background_color)
+        self._text = font.render(text, True, TEXT_COLOR, background_color)
+        
         if centered:
             # get (top, left) position to center text with
-            self.__pos = self.__center_text(area)
+            self._pos = self._center_text(area)
         else:
-            self.__pos = (area.left, area.top)
+            # just use top-left corner as usual
+            self._pos = (area.left, area.top)
         
-    def __center_text(self, rect: pygame.Rect) -> (int, int):
-        """ Helper function to center text
+    def _center_text(self, area: pygame.Rect) -> (int, int):
+        """Calculate top-left corner to center text within a rectangle.
 
-        text is a text-surface which needs to be centered
-        rect is the rectangular field which the text should be centered in
-        the return value is a tuple with (left, top) values for where
-            the text should be blitted to
+        text -- text-surface which needs to be centered
+        area -- Rect which the text should be centered in
+
+        Returns a tuple with (left, top) for a centered text position
         """
         
         # temporary text Rect, used to grab width/height for centering text
-        temp_rect = self.__text.get_rect()
-        return (rect.left + (rect.width / 2) - (temp_rect.width / 2),
-                rect.top + (rect.height / 2) - (temp_rect.height / 2)
+        temp_rect = self._text.get_rect()
+        # center within rectangle, accounting for the text's size itself
+        return (area.left + (area.width / 2) - (temp_rect.width / 2),
+                area.top + (area.height / 2) - (temp_rect.height / 2)
                 )
 
     def draw(self, screen: pygame.Surface):
-        """ Blits the text onto the designated surface """
+        """Draw the text on the designated Surface."""
         
-        screen.blit(self.__text, self.__pos)
+        screen.blit(self._text, self._pos)
 
-def paragraphs_to_lines(area: pygame.Rect, paragraphs: list,
-                        font: pygame.font.Font, background_color: pygame.Color):
-    """  Helper function which converts paragraphs to line-by-line Texts """
-    
-    # 2D array: array per paragrah, with elements being words
-    words = [paragraph.split(' ') for paragraph in paragraphs]
-    
-    line_length, line_height = 0, 0
-    y = area.top
+def paragraphs_to_lines(paragraphs: list, font: pygame.font.Font,
+                        area: pygame.Rect, background_color: pygame.Color
+                        ) -> list:
+    """Convert paragraphs to line-by-line Texts.
+
+    paragraphs -- list of paragraphs to convert
+    font -- Font the text is to be displayed in
+    area -- Rect where the text should go
+    background_color -- expected background Color for this text
+
+    Returns a list of Texts, one for each broken-up line of the paragraphs
+    """
+
+    # return variable
     lines = []
     
-    for paragraph in words:
+    # 2D array: first level is list of paragraphs, second level is list of words
+    text = [paragraph.split(' ') for paragraph in paragraphs]
+
+    # the first y-value that should be used is just the top of the area
+    y = area.top
+
+    for paragraph in text:
+        # reset current line
+        line_length = 0
         cur_line = []
+        
         for word in paragraph:
             # grab width & height of this word
-            word_width, word_height = \
-                        font.render(word, True, TEXT_COLOR).get_size()
-            
-            if line_height < word_height:
-                line_height = word_height
+            word_width = font.render(word, True, TEXT_COLOR).get_size()[0]
                 
             # if this word would cause an overflow
             if line_length + word_width >= area.width:
-                # add line so far
-                lines.append(Text(" ".join(cur_line), font,
-                                  pygame.Rect(area.left, y,
-                                              area.width, line_height),
-                                  background_color, False))                
+                # grab line so far
+                final_line = " ".join(cur_line)
+                line_height = font.render(final_line, True,
+                                          TEXT_COLOR).get_size()[1]
+                
+                # create Text and add to list
+                lines.append(Text(final_line, font,
+                                  pygame.Rect(area.left, y, area.width,
+                                              line_height),
+                                  background_color, False))
+                
                 # reset back down to next line
                 y += line_height + 1
-                line_length, line_height = 0, word_height
+                line_length = 0
                 cur_line = []
-                
+
+            # no matter what, now add this word to growing line
             cur_line.append(word)
             line_length += word_width
 
-        lines.append(Text(" ".join(cur_line), font,
+        # grab leftover words in paragraph
+        final_line = " ".join(cur_line)
+        line_height = font.render(final_line, True, TEXT_COLOR).get_size()[1]
+        
+        # create Text and add to list        
+        lines.append(Text(final_line, font,
                           pygame.Rect(area.left, y, area.width, line_height),
                           background_color, False))
+
+        # double-step down for paragraph break
         y += (2 * (line_height + 1))
-        line_length, line_height = 0, word_height
 
     return lines
 
-def get_text_by_center(center: (int, int), text: str, font: pygame.font.Font,
-                       background_color: pygame.Color):
-    word_width, word_height = font.render(text, True, TEXT_COLOR).get_size()
-    return Text(text, font, pygame.Rect(center[0] - (word_width / 2),
-                                        center[1] - (word_height / 2),
-                                        word_width, word_height),
-                background_color)
+def get_text_by_center(text: str, font: pygame.font.Font, center: (int, int),
+                       background_color: pygame.Color) -> Text:
+    """Generate a text box which is centered on the given point.
+
+    text -- string to display
+    font -- Font the text is to be displayed in
+    center -- point the text should be centered at
+    background_color -- expected background Color for this text
+
+    Returns a Text with the given text, font, and a centered position
+    """
+    
+    # grab size of text
+    text_width, text_height = font.render(text, True, TEXT_COLOR).get_size()
+    # calculate just-big-enough centered text rectangle
+    centered_area = pygame.Rect(center[0] - (text_width / 2),
+                                center[1] - (text_height / 2),
+                                text_width, text_height)
+    
+    return Text(text, font, centered_area, background_color)
