@@ -1,4 +1,4 @@
-""" slider.py: for a Slider class """
+f""" slider.py: for a Slider class """
 
 import pygame
 from math import fabs
@@ -45,8 +45,8 @@ class Slider():
         x_jump = self.__slide.width / (TICKS - 1)
         for i in range(TICKS):
             labels.append(text.get_text_by_center(
-                (self.__slide.left + (x_jump * i), self.__slide.bottom + 5),
                 (str) (self.__range[0] + (val_jump * i)), fonts.NUMBER_FONT,
+                (self.__slide.left + (x_jump * i), self.__slide.bottom + 5),
                 background_color))
         return labels
                 
