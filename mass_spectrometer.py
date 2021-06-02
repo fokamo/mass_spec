@@ -90,11 +90,13 @@ class MassSpectrometer():
         """
         
         self.__particle.set_mass(new_mass)
+        self.__mass = new_mass
 
     def set_charge(self, new_charge: int):
         """Update charge """
 
         self.__particle.set_charge(new_charge)
+        self.__charge = new_charge
 
     def set_initial_x_velocity(self, new_initial_x_velocity: int):
         """ Update initial x velocity
