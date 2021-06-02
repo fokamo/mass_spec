@@ -42,10 +42,11 @@ def main():
     # start screen elements
     
     # buttons which navigate to other screens
-    exit_button = button.Button(450, 500, 100, 50, "Exit", BACK_COLOR)
-    sim_button = button.Button(200, 300, 200, 50, "Simulation",
+    exit_button = button.Button("Exit", pygame.Rect(450, 500, 100, 50),
+                                BACK_COLOR)
+    sim_button = button.Button("Simulation", pygame.Rect(200, 300, 200, 50),
                                MOVE_FURTHER_COLOR)
-    info_button = button.Button(600, 300, 200, 50, "Science",
+    info_button = button.Button("Science", pygame.Rect(600, 300, 200, 50),
                                 MOVE_FURTHER_COLOR)
     # title & subtitle
     title = text.Text("Mass Spectrometer", fonts.TITLE_FONT,
@@ -60,23 +61,31 @@ def main():
 
     # main info screen elements
     
-    back_button = button.Button(450, 500, 100, 50, "Back", BACK_COLOR)
+    back_button = button.Button("Back", pygame.Rect(450, 500, 100, 50),
+                                BACK_COLOR)
     # buttons which lead to info subscreens
-    mass_spec_intro_button = button.Button(125, 150, 300, 50, "Mass Spec 101",
+    mass_spec_intro_button = button.Button("Mass Spec 101",
+                                           pygame.Rect(125, 150, 300, 50),
                                            MOVE_FURTHER_COLOR)
-    straight_sec_button = button.Button(550, 150, 300, 50, "Straight Shootin'",
+    straight_sec_button = button.Button("Straight Shootin'",
+                                        pygame.Rect(550, 150, 300, 50),
                                         MOVE_FURTHER_COLOR)
-    open_sec_button = button.Button(125, 225, 300, 50, "Open Curving",
+    open_sec_button = button.Button("Open Curving",
+                                    pygame.Rect(125, 225, 300, 50),
                                     MOVE_FURTHER_COLOR)
-    a_c_button = button.Button(550, 225, 300, 50, "Centripetal",
+    a_c_button = button.Button("Centripetal", pygame.Rect(550, 225, 300, 50),
                                MOVE_FURTHER_COLOR)
-    mag_force_button = button.Button(125, 300, 300, 50, "Magnetic Force",
+    mag_force_button = button.Button("Magnetic Force",
+                                     pygame.Rect(125, 300, 300, 50),
                                      MOVE_FURTHER_COLOR)
-    e_force_button = button.Button(550, 300, 300, 50, "Electric Force",
+    e_force_button = button.Button("Electric Force",
+                                   pygame.Rect(550, 300, 300, 50),
                                    MOVE_FURTHER_COLOR)
-    int_charge_button = button.Button(125, 375, 300, 50, "Discrete Charges",
+    int_charge_button = button.Button("Discrete Charges",
+                                      pygame.Rect(125, 375, 300, 50),
                                       MOVE_FURTHER_COLOR)
-    units_button = button.Button(550, 375, 300, 50, "Units",
+    units_button = button.Button("Units",
+                                 pygame.Rect(550, 375, 300, 50),
                                  MOVE_FURTHER_COLOR)
     subscreen_buttons = (mass_spec_intro_button, straight_sec_button,
                          open_sec_button, a_c_button, mag_force_button,
@@ -102,7 +111,8 @@ def main():
     mass_spec = mass_spectrometer.MassSpectrometer(
         pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3, WINDOW_SIZE[1]),
         20, 1, 5, 5, -1) # arbitrarily chosen values for testing purposes
-    reset_button = button.Button(50, 50, 100, 50, "Reset", MOVE_FURTHER_COLOR)
+    reset_button = button.Button("Reset", pygame.Rect(50, 50, 100, 50),
+                                 MOVE_FURTHER_COLOR)
 
     # set up sliders (annonyingly complicated... may try to simplify later)
     slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
