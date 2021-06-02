@@ -61,14 +61,32 @@ def main():
     # main info screen elements
     
     back_button = button.Button(450, 500, 100, 50, "Back", BACK_COLOR)
+    # buttons which lead to info subscreens
     mass_spec_intro_button = button.Button(125, 150, 300, 50, "Mass Spec 101",
                                            MOVE_FURTHER_COLOR)
-    # buttons which lead to info subscreens
+    straight_sec_button = button.Button(550, 150, 300, 50, "Straight Shootin'",
+                                        MOVE_FURTHER_COLOR)
+    open_sec_button = button.Button(125, 225, 300, 50, "Open Curving",
+                                    MOVE_FURTHER_COLOR)
+    a_c_button = button.Button(550, 225, 300, 50, "Centripetal",
+                               MOVE_FURTHER_COLOR)
+    mag_force_button = button.Button(125, 300, 300, 50, "Magnetic Force",
+                                     MOVE_FURTHER_COLOR)
+    e_force_button = button.Button(550, 300, 300, 50, "Electric Force",
+                                   MOVE_FURTHER_COLOR)
+    int_charge_button = button.Button(125, 375, 300, 50, "Discrete Charges",
+                                      MOVE_FURTHER_COLOR)
+    units_button = button.Button(550, 375, 300, 50, "Units",
+                                 MOVE_FURTHER_COLOR)
+    subscreen_buttons = (mass_spec_intro_button, straight_sec_button,
+                         open_sec_button, a_c_button, mag_force_button,
+                         e_force_button, int_charge_button, units_button)
     info_title = text.Text("The Science Behind It", fonts.TITLE_FONT,
                            pygame.Rect(0, 0, WINDOW_SIZE[0],
                                        WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
 
-    info_screen_elems = (back_button, mass_spec_intro_button, info_title)
+    info_screen_elems = [back_button, mass_spec_intro_button, info_title]
+    info_screen_elems.extend(subscreen_buttons)
 
 
     # info subscreen elements
@@ -195,10 +213,10 @@ def main():
                     if back_button.is_clicked(mouse_x, mouse_y):
                         screen = START
                         window.fill(BACKGROUND_COLOR)
-                        
-                    # mass spec intro button goes to first subscreen
-                    elif mass_spec_intro_button.is_clicked(mouse_x, mouse_y):
-                        subscreen_num = 0
+
+                    for i in range(len(subscreen_buttons)):
+                        if subscreen_buttons[i].is_clicked(mouse_x, mouse_y):
+                            subscreen_num = i
 
                     # if a subscreen has been set, set it up 
                     if subscreen_num != -1:
@@ -216,11 +234,10 @@ def main():
                             info_area, info_subscreens[subscreen_num].info,
                             fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
                             info_subscreen_elems.append(line)
-                        for line in text.paragraphs_to_lines(
-                            sources_area,
-                            info_subscreens[subscreen_num].sources,
-                            fonts.PARAGRAPH_FONT, BACKGROUND_COLOR):
-                            info_subscreen_elems.append(line)
+
+                        info_subscreen_elems.append(text.Text(sources_area,
+                                     info_subscreens[subscreen_num].source,
+                                     fonts.PARAGRAPH_FONT, BACKGROUND_COLOR))
                             
                         screen = INFO_SUBSCREEN
                         window.fill(BACKGROUND_COLOR)
