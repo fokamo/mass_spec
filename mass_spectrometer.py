@@ -1,4 +1,12 @@
-""" mass_spectrometer.py: for a MassSpectrometer class """
+""" mass_spectrometer.py: for a MassSpectrometer class
+
+Classes:
+MassSpectromter -- representing a mass spectrometer
+
+Constants:
+WALL_THICKNESS -- thickness of walls, in pixels
+WALL_COLOR -- color of walls
+"""
 
 import pygame
 import charged_particle
@@ -6,33 +14,68 @@ import charged_particle
 # required initialization step
 pygame.init()
 
+# wall constants
 WALL_THICKNESS = 10
 WALL_COLOR = pygame.Color(148, 134, 106)
 
 class MassSpectrometer():
+    """A class to represent a mass spectrometer.
 
-    def __init__(self, area: pygame.Rect, mass: int, charge: int,
-                 initial_x_velocity: int, e_field: int, mag_field: int):
-        # save information about particle
-        self.__area = area
-        self.__mass = mass
-        self.__charge = charge
-        self.set_initial_x_velocity(initial_x_velocity)
-        self.__particle_start_pos = (charged_particle.RADIUS, area.height / 2)
+    Attributes:
+    e_field -- electric field strength, positive is down
+    mag_field -- magnetic field strength, positive is out of page
+    _mass -- mass of charged particle
+    _charge -- charge of charged particle
+    _initial_x_velocity -- x velocity of charged particles at launch
+    _area -- rectangular area that mass spectrometer takes up
+    _particle -- current charged particle in mass spectrometer
+    _walls -- list of Rects which are the walls of the mass spectrometer
 
-        # generates new particle
-        self.reset_particle()
+    Methods:
+    draw -- draws the mass spectrometer on a Surface and moves particle a frame
+    reset_particle -- reset the charged particle back to start
+    set_mass -- sets _mass to a new value
+    set_charge -- sets _charge to a new value
+    set_initial_x_velocity -- sets initial x velocity to a new value
+    """
+
+    def __init__(self, e_field: int, mag_field: int, mass: int, charge: int,
+                 initial_x_velocity: int, area: pygame.Rect):
+        """Initialize a MassSpectrometer.
+
+        e_field -- electric field strength, positive is down
+        mag_field -- magnetic field strength, positive is out of page
+        mass -- mass of charged particle
+        charge -- charge of charged particle
+        initial_x_velocity -- x velocity of charged particles at launch
+        area -- rectangular area that mass spectrometer takes up
+        """
 
         self.e_field = e_field
         self.mag_field = mag_field
-        
-        self.__walls = self.__generate_walls(area)
 
-    def __generate_walls(self, area: pygame.Rect) -> tuple:
-        """ Create properly-placed walls
-        2/5 from edge to a horizontal wall, 1/5 between them
-        1/2 is given to horizontal walls
+        # save information about particle
+        self._mass = mass
+        self._charge = charge
+        self.set_initial_x_velocity(initial_x_velocity)
+
+        self._area = area
+
+        # generate new particle
+        self.reset_particle()
+        self._walls = self._generate_walls(area)
+
+    def _generate_walls(self, area: pygame.Rect) -> (pygame.Rect, pygame.Rect,
+                                                     pygame.Rect, pygame.Rect):
+        """Create properly-placed walls.
+
+        2/5 from top/bottom to a horizontal wall, 1/5 between them
+        1/2 of horizontal space goes to horizontal walls
         verticle walls sprout out from ends of horizontal ones
+
+        area -- rectangular area that the mass spectrometer may take up
+
+        Returns tuple with all walls as Rects
         """
         
         upper_horizontal = pygame.Rect(
@@ -52,56 +95,58 @@ class MassSpectrometer():
                 upper_vertical, lower_vertical)
 
     def draw(self, screen: pygame.Surface):
-        """ Draw whole mass spectrometer, moving particle a frame """
+        """Draw next frame of mass spectrometer onto a given Surface"""
 
         # electric field only works in first half (horizontal section)
-        if (self.__particle.get_pos()[0] >
-            self.__area.left + (self.__area.width / 2)):
-            self.__particle.move(0, self.mag_field)
+        if (self._particle.get_pos()[0] >
+            self._area.left + (self._area.width / 2)):
+            self._particle.move(0, self.mag_field)
         else:
-            self.__particle.move(self.e_field, self.mag_field)
+            self._particle.move(self.e_field, self.mag_field)
 
         # draw moved particle
-        self.__particle.draw(screen)
+        self._particle.draw(screen)
 
         # draw each wall
-        for wall in self.__walls:
+        for wall in self._walls:
             pygame.draw.rect(screen, WALL_COLOR, wall)
-            if self.__particle.is_collision(wall):
-                self.__particle.stop()
+            # particle stops if it hits a wall
+            if self._particle.is_collision(wall):
+                self._particle.stop()
 
-        particle_y = self.__particle.get_pos()[1]
-        if (particle_y < self.__area.top or
-            particle_y > self.__area.top + self.__area.height):
-            self.__particle.stop()
+        # particle stops if it hits the top or bottom edge
+        particle_y = self._particle.get_pos()[1]
+        if (particle_y < self._area.top or
+            particle_y > self._area.top + self._area.height):
+            self._particle.stop()
+
+        print(self._particle.get_pos())
 
     def reset_particle(self):
-        """ Resets particle back to start position """
+        """Reset particle back to start position."""
         
-        self.__particle = charged_particle.ChargedParticle(
-            self.__mass, self.__charge, self.__initial_x_velocity,
-            self.__particle_start_pos)
+        self._particle = charged_particle.ChargedParticle(
+            self._mass, self._charge, self._initial_x_velocity,
+            (charged_particle.RADIUS, self._area.height / 2))
 
     def set_mass(self, new_mass: int):
-        """ Update mass,
-        Checks to make sure new value is legal
-        """
+        """Update mass."""
         
-        self.__particle.set_mass(new_mass)
-        self.__mass = new_mass
+        self._particle.set_mass(new_mass)
+        # must also save to self for resetting purposes
+        self._mass = new_mass
 
     def set_charge(self, new_charge: int):
-        """Update charge """
+        """Update charge."""
 
         self.__particle.set_charge(new_charge)
+        # must also save to self for resetting purposes
         self.__charge = new_charge
 
     def set_initial_x_velocity(self, new_initial_x_velocity: int):
-        """ Update initial x velocity
-        Checks to make sure new value is legal
-        """
+        """Update initial x velocit, checking if new value is legal."""
 
         if new_initial_x_velocity > 0:
-            self.__initial_x_velocity = new_initial_x_velocity
+            self._initial_x_velocity = new_initial_x_velocity
         else:
             raise ValueError("Initial x velocity must be positive")
