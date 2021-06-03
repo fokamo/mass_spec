@@ -32,7 +32,8 @@ class MassSpectrometer():
     _walls -- list of Rects which are the walls of the mass spectrometer
 
     Methods:
-    draw -- draws the mass spectrometer on a Surface and moves particle a frame
+    move -- move particle a frame
+    draw -- draws the mass spectrometer on a Surface
     reset_particle -- reset the charged particle back to start
     set_mass -- sets _mass to a new value
     set_charge -- sets _charge to a new value
