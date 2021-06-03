@@ -95,7 +95,7 @@ class MassSpectrometer():
                 upper_vertical, lower_vertical)
 
     def draw(self, screen: pygame.Surface):
-        """Draw next frame of mass spectrometer onto a given Surface"""
+        """Draw next frame of mass spectrometer onto a given Surface."""
 
         # electric field only works in first half (horizontal section)
         if (self._particle.get_pos()[0] >
@@ -119,8 +119,6 @@ class MassSpectrometer():
         if (particle_y < self._area.top or
             particle_y > self._area.top + self._area.height):
             self._particle.stop()
-
-        print(self._particle.get_pos())
 
     def reset_particle(self):
         """Reset particle back to start position."""
