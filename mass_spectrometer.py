@@ -30,7 +30,6 @@ class MassSpectrometer():
 
     def __generate_walls(self, area: pygame.Rect) -> tuple:
         """ Create properly-placed walls
-
         2/5 from edge to a horizontal wall, 1/5 between them
         1/2 is given to horizontal walls
         verticle walls sprout out from ends of horizontal ones
@@ -56,7 +55,7 @@ class MassSpectrometer():
         """ Draw whole mass spectrometer, moving particle a frame """
 
         # electric field only works in first half (horizontal section)
-        if (self.__particle.pos[0] >
+        if (self.__particle.get_pos()[0] >
             self.__area.left + (self.__area.width / 2)):
             self.__particle.move(0, self.mag_field)
         else:
@@ -71,7 +70,7 @@ class MassSpectrometer():
             if self.__particle.is_collision(wall):
                 self.__particle.stop()
 
-        particle_y = self.__particle.pos[1]
+        particle_y = self.__particle.get_pos()[1]
         if (particle_y < self.__area.top or
             particle_y > self.__area.top + self.__area.height):
             self.__particle.stop()
@@ -85,22 +84,20 @@ class MassSpectrometer():
 
     def set_mass(self, new_mass: int):
         """ Update mass,
-
         Checks to make sure new value is legal
         """
         
-        self.__particle.mass = new_mass
+        self.__particle.set_mass(new_mass)
         self.__mass = new_mass
 
     def set_charge(self, new_charge: int):
         """Update charge """
 
-        self.__particle.charge = new_charge
+        self.__particle.set_charge(new_charge)
         self.__charge = new_charge
 
     def set_initial_x_velocity(self, new_initial_x_velocity: int):
         """ Update initial x velocity
-
         Checks to make sure new value is legal
         """
 
