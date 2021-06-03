@@ -39,6 +39,9 @@ def main():
     screen = START
     window.fill(BACKGROUND_COLOR)
 
+    # by default simulator is not paused
+    paused = False
+
     # start screen elements
     
     # buttons which navigate to other screens
@@ -66,6 +69,10 @@ def main():
                                  MOVE_FURTHER_COLOR)
     back_button = button.Button("Back", pygame.Rect(450, 500, 100, 50),
                                 BACK_COLOR)
+    pause_button = button.Button("Pause", pygame.Rect(50, 175, 100, 50),
+                                 BACK_COLOR)
+    unpause_button = button.Button("Go", pygame.Rect(50, 175, 100, 50),
+                                   MOVE_FURTHER_COLOR)
     # set up sliders
     slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
     charge_slider = slider.DiscreteSlider("Charge", (-2, 2), 1, slider_area,
@@ -171,6 +178,12 @@ def main():
             for elem in simulator_screen_elems:
                 elem.draw(window)
 
+            if paused:
+                unpause_button.draw(window)
+            else:
+                pause_button.draw(window)
+                mass_spec.move()
+
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -183,6 +196,10 @@ def main():
                     # reset button resets particle
                     elif reset_button.is_clicked(mouse_x, mouse_y):
                         mass_spec.reset_particle()
+
+                    # pause and unpause buttons in same spot
+                    elif pause_button.is_clicked(mouse_x, mouse_y):
+                        paused = not paused
 
                     # handle slider clicks
                     elif charge_slider.is_clicked(mouse_x, mouse_y):
