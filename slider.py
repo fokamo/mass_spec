@@ -1,8 +1,14 @@
 """slider.py: for a Slider class
 
+Classes:
 Slider class -- for an interactive slider
 DiscreteSlider class -- subclass of Slider which only allows values
                         exactly at ticks
+
+Constants:
+TICKS -- number of ticks per slider
+SLIDER_COLOR -- color of slide rectangle
+CIRCLE_COLOR -- color of value-picking circle
 """
 
 import pygame
@@ -142,7 +148,7 @@ class Slider():
         new_val = self._range[0] + \
                   ((self._range[1] - self._range[0]) * percent)
         
-        return self.set_value(new_val)
+        return self._set_value(new_val)
 
     def draw(self, screen: pygame.Surface):
         """Draw the Button onto a given Surface."""
