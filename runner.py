@@ -1,6 +1,6 @@
-""" runner.py
+"""runner.py
 
-Runs the simulator, dealing with the high-level logic
+Runs the simulator, dealing with the high-level logic, by calling main()
 
 Has three main screens: Start, Simulator, and Info.
 Info has several sub-screens with information.
@@ -58,11 +58,40 @@ def main():
 
     start_screen_elems = (exit_button, sim_button, info_button, title, subtitle)
 
-
-    # main info screen elements
-    
+    # simulation screen elements
+    mass_spec = mass_spectrometer.MassSpectrometer(
+        5, -1, 20, 1, 5, pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3,
+                                     WINDOW_SIZE[1]))
+    reset_button = button.Button("Reset", pygame.Rect(50, 50, 100, 50),
+                                 MOVE_FURTHER_COLOR)
     back_button = button.Button("Back", pygame.Rect(450, 500, 100, 50),
                                 BACK_COLOR)
+    # set up sliders
+    slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
+    charge_slider = slider.DiscreteSlider("Charge", (-2, 2), 1, slider_area,
+                                          BACKGROUND_COLOR)
+    slider_area.top += slider_area.height
+    mass_slider = slider.Slider("Mass", (10, 50), 20, slider_area,
+                                BACKGROUND_COLOR)
+    slider_area.top += slider_area.height
+    velocity_slider = slider.Slider("i. Velocity", (2, 10), 5, slider_area,
+                                    BACKGROUND_COLOR)
+    slider_area.top += slider_area.height
+    e_field_slider = slider.Slider("E Field", (-5, 5), 5, slider_area,
+                                   BACKGROUND_COLOR)
+    slider_area.top += slider_area.height
+    mag_field_slider = slider.Slider("Mag Field", (-5, 5), -1, slider_area,
+                                     BACKGROUND_COLOR)
+                                   
+    simulator_screen_elems = (back_button, mass_spec, reset_button,
+                              charge_slider, mass_slider,
+                              velocity_slider, e_field_slider,
+                              mag_field_slider)
+
+    # main info screen elements
+    info_title = text.Text("The Science Behind It", fonts.TITLE_FONT,
+                           pygame.Rect(0, 0, WINDOW_SIZE[0],
+                                       WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
     # buttons which lead to info subscreens
     mass_spec_intro_button = button.Button("Mass Spec 101",
                                            pygame.Rect(125, 150, 300, 50),
@@ -90,9 +119,6 @@ def main():
     subscreen_buttons = (mass_spec_intro_button, straight_sec_button,
                          open_sec_button, a_c_button, mag_force_button,
                          e_force_button, int_charge_button, units_button)
-    info_title = text.Text("The Science Behind It", fonts.TITLE_FONT,
-                           pygame.Rect(0, 0, WINDOW_SIZE[0],
-                                       WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
 
     info_screen_elems = [back_button, mass_spec_intro_button, info_title]
     info_screen_elems.extend(subscreen_buttons)
@@ -106,36 +132,6 @@ def main():
     source_area = pygame.Rect(200, 450, 600, 50)
 
     info_subscreen_elems = [back_button, info_subscreen_title]
-
-    # simulation screen elements
-    mass_spec = mass_spectrometer.MassSpectrometer(
-        5, -1, 20, 1, 5, pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3,
-                                     WINDOW_SIZE[1]))
-    reset_button = button.Button("Reset", pygame.Rect(50, 50, 100, 50),
-                                 MOVE_FURTHER_COLOR)
-
-    # set up sliders (annonyingly complicated... may try to simplify later)
-    slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
-    charge_slider = slider.DiscreteSlider("Charge", (-2, 2), 1, slider_area,
-                                          BACKGROUND_COLOR)
-    slider_area.top += slider_area.height
-    mass_slider = slider.Slider("Mass", (10, 50), 20, slider_area,
-                                BACKGROUND_COLOR)
-    slider_area.top += slider_area.height
-    velocity_slider = slider.Slider("i. Velocity", (2, 10), 5, slider_area,
-                                    BACKGROUND_COLOR)
-    slider_area.top += slider_area.height
-    e_field_slider = slider.Slider("E Field", (-5, 5), 5, slider_area,
-                                   BACKGROUND_COLOR)
-    slider_area.top += slider_area.height
-    mag_field_slider = slider.Slider("Mag Field", (-5, 5), -1, slider_area,
-                                     BACKGROUND_COLOR)
-                                   
-
-    simulator_screen_elems = (back_button, mass_spec, reset_button,
-                              charge_slider, mass_slider,
-                              velocity_slider, e_field_slider,
-                              mag_field_slider)
    
     # game loop
     while True:
@@ -188,6 +184,7 @@ def main():
                     elif reset_button.is_clicked(mouse_x, mouse_y):
                         mass_spec.reset_particle()
 
+                    # handle slider clicks
                     elif charge_slider.is_clicked(mouse_x, mouse_y):
                         mass_spec.set_charge(
                             charge_slider.handle_click(mouse_x, mouse_y))
@@ -224,6 +221,7 @@ def main():
                         screen = START
                         window.fill(BACKGROUND_COLOR)
 
+                    # check for click on any subscreen button
                     for i in range(len(subscreen_buttons)):
                         if subscreen_buttons[i].is_clicked(mouse_x, mouse_y):
                             subscreen_num = i
@@ -239,12 +237,12 @@ def main():
                         info_subscreen_elems = [back_button,
                                                 info_subscreen_title]
 
-                        # add info paragraphs & sources lines to elems
+                        # add info paragraph lines to elems
                         for line in text.paragraphs_to_lines(
                             info_subscreens[subscreen_num].info,
                             fonts.PARAGRAPH_FONT, info_area, BACKGROUND_COLOR):
                             info_subscreen_elems.append(line)
-
+                        # add source line to elems
                         info_subscreen_elems.append(text.Text(
                                      info_subscreens[subscreen_num].source,
                                      fonts.PARAGRAPH_FONT, source_area,
