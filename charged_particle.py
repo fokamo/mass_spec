@@ -158,7 +158,6 @@ class ChargedParticle():
         else:
             self._color = NEUTRAL_COLOR
 
-    
     def is_collision(self, rect: pygame.Rect) -> bool:
         """Check if particle collides with given rectangle."""
         
