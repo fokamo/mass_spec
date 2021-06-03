@@ -94,9 +94,9 @@ class MassSpectrometer():
         return (upper_horizontal, lower_horizontal,
                 upper_vertical, lower_vertical)
 
-    def draw(self, screen: pygame.Surface):
-        """Draw next frame of mass spectrometer onto a given Surface."""
-
+    def move(self):
+        """Move particle one frame."""
+        
         # electric field only works in first half (horizontal section)
         if (self._particle.get_pos()[0] >
             self._area.left + (self._area.width / 2)):
@@ -104,7 +104,10 @@ class MassSpectrometer():
         else:
             self._particle.move(self.e_field, self.mag_field)
 
-        # draw moved particle
+    def draw(self, screen: pygame.Surface):
+        """Draw mass spectrometer onto a given Surface."""
+
+        # draw particle
         self._particle.draw(screen)
 
         # draw each wall
@@ -137,9 +140,9 @@ class MassSpectrometer():
     def set_charge(self, new_charge: int):
         """Update charge."""
 
-        self.__particle.set_charge(new_charge)
+        self._particle.set_charge(new_charge)
         # must also save to self for resetting purposes
-        self.__charge = new_charge
+        self._charge = new_charge
 
     def set_initial_x_velocity(self, new_initial_x_velocity: int):
         """Update initial x velocit, checking if new value is legal."""
