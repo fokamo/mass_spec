@@ -6,7 +6,7 @@ Has three main screens: Start, Simulator, and Info.
 Info has several sub-screens with information.
 """
 
-import pygame, sys
+import pygame, sys, random
 import button, text, fonts, info_section, mass_spectrometer, slider
 
 # required initialization step
@@ -15,6 +15,10 @@ pygame.init()
 # the game clock & frame-rate
 FPS = 30
 game_clock = pygame.time.Clock()
+
+CORMAN_IMAGE = pygame.image.load('corman.jpg')
+CORMAN_NAME = (pygame.K_c, pygame.K_o, pygame.K_r,
+               pygame.K_m, pygame.K_a, pygame.K_n)
 
 # color constants
 BACKGROUND_COLOR = pygame.Color(38, 228, 235)
@@ -25,8 +29,15 @@ MOVE_FURTHER_COLOR = pygame.Color(79, 240, 146)
 WINDOW_SIZE = (1000, 600)
 window = pygame.display.set_mode(WINDOW_SIZE)
 
-def main():
-    """Main runner function. Implements high-level logic"""
+def random_corman_pos() -> (int, int):
+    """Generate a random valid position for the Corman image."""
+    
+    width, height = CORMAN_IMAGE.get_width(), CORMAN_IMAGE.get_height()
+    return (random.randrange(0, WINDOW_SIZE[0] - width),
+            random.randrange(0, WINDOW_SIZE[1] - height))
+
+def main() -> None:
+    """Main runner function. Implements high-level logic."""
 
     # flags used to indicate current screen
     START = 1
@@ -34,6 +45,10 @@ def main():
     INFO = 3
     INFO_SUBSCREEN = 4
     subscreen_num = -1
+
+    # tracking easter egg
+    corman_positions = []
+    corman_name_index = 0
 
     # initially on start screen
     screen = START
@@ -45,17 +60,17 @@ def main():
     # start screen elements
     
     # buttons which navigate to other screens
-    exit_button = button.Button("Exit", pygame.Rect(450, 500, 100, 50),
+    exit_button = button.Button('Exit', pygame.Rect(450, 500, 100, 50),
                                 BACK_COLOR)
-    sim_button = button.Button("Simulation", pygame.Rect(200, 300, 200, 50),
+    sim_button = button.Button('Simulation', pygame.Rect(200, 300, 200, 50),
                                MOVE_FURTHER_COLOR)
-    info_button = button.Button("Science", pygame.Rect(600, 300, 200, 50),
+    info_button = button.Button('Science', pygame.Rect(600, 300, 200, 50),
                                 MOVE_FURTHER_COLOR)
     # title & subtitle
-    title = text.Text("Mass Spectrometer", fonts.TITLE_FONT,
+    title = text.Text('Mass Spectrometer', fonts.TITLE_FONT,
                       pygame.Rect(0, 0, WINDOW_SIZE[0], WINDOW_SIZE[1] / 2),
                       BACKGROUND_COLOR)
-    subtitle = text.Text("by Faith Okamoto", fonts.SUBTITLE_FONT,
+    subtitle = text.Text('by Faith Okamoto', fonts.SUBTITLE_FONT,
                          pygame.Rect(0, 100, WINDOW_SIZE[0],
                                      WINDOW_SIZE[1] / 2), BACKGROUND_COLOR)
 
@@ -65,29 +80,29 @@ def main():
     mass_spec = mass_spectrometer.MassSpectrometer(
         5, -1, 20, 1, 5, pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3,
                                      WINDOW_SIZE[1]))
-    reset_button = button.Button("Reset", pygame.Rect(50, 50, 100, 50),
+    reset_button = button.Button('Reset', pygame.Rect(50, 50, 100, 50),
                                  MOVE_FURTHER_COLOR)
-    back_button = button.Button("Back", pygame.Rect(450, 500, 100, 50),
+    back_button = button.Button('Back', pygame.Rect(450, 500, 100, 50),
                                 BACK_COLOR)
-    pause_button = button.Button("Pause", pygame.Rect(50, 175, 100, 50),
+    pause_button = button.Button('Pause', pygame.Rect(50, 175, 100, 50),
                                  BACK_COLOR)
-    unpause_button = button.Button("Go", pygame.Rect(50, 175, 100, 50),
+    unpause_button = button.Button('Go', pygame.Rect(50, 175, 100, 50),
                                    MOVE_FURTHER_COLOR)
     # set up sliders
     slider_area = pygame.Rect(WINDOW_SIZE[0] - 200, 0, 150, WINDOW_SIZE[1] / 5)
-    charge_slider = slider.DiscreteSlider("Charge", (-2, 2), 1, slider_area,
+    charge_slider = slider.DiscreteSlider('Charge', (-2, 2), 1, slider_area,
                                           BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    mass_slider = slider.Slider("Mass", (10, 50), 20, slider_area,
+    mass_slider = slider.Slider('Mass', (10, 50), 20, slider_area,
                                 BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    velocity_slider = slider.Slider("i. Velocity", (2, 10), 5, slider_area,
+    velocity_slider = slider.Slider('i. Velocity', (2, 10), 5, slider_area,
                                     BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    e_field_slider = slider.Slider("E Field", (-5, 5), 5, slider_area,
+    e_field_slider = slider.Slider('E Field', (-5, 5), 5, slider_area,
                                    BACKGROUND_COLOR)
     slider_area.top += slider_area.height
-    mag_field_slider = slider.Slider("Mag Field", (-5, 5), -1, slider_area,
+    mag_field_slider = slider.Slider('Mag Field', (-5, 5), -1, slider_area,
                                      BACKGROUND_COLOR)
                                    
     simulator_screen_elems = (back_button, mass_spec, reset_button,
@@ -96,31 +111,31 @@ def main():
                               mag_field_slider)
 
     # main info screen elements
-    info_title = text.Text("The Science Behind It", fonts.TITLE_FONT,
+    info_title = text.Text('The Science Behind It', fonts.TITLE_FONT,
                            pygame.Rect(0, 0, WINDOW_SIZE[0],
                                        WINDOW_SIZE[1] / 4), BACKGROUND_COLOR)
     # buttons which lead to info subscreens
-    mass_spec_intro_button = button.Button("Mass Spec 101",
+    mass_spec_intro_button = button.Button('Mass Spec 101',
                                            pygame.Rect(125, 150, 300, 50),
                                            MOVE_FURTHER_COLOR)
     straight_sec_button = button.Button("Straight Shootin'",
                                         pygame.Rect(550, 150, 300, 50),
                                         MOVE_FURTHER_COLOR)
-    open_sec_button = button.Button("Open Curving",
+    open_sec_button = button.Button('Open Curving',
                                     pygame.Rect(125, 225, 300, 50),
                                     MOVE_FURTHER_COLOR)
-    a_c_button = button.Button("Centripetal", pygame.Rect(550, 225, 300, 50),
+    a_c_button = button.Button('Centripetal', pygame.Rect(550, 225, 300, 50),
                                MOVE_FURTHER_COLOR)
-    mag_force_button = button.Button("Magnetic Force",
+    mag_force_button = button.Button('Magnetic Force',
                                      pygame.Rect(125, 300, 300, 50),
                                      MOVE_FURTHER_COLOR)
-    e_force_button = button.Button("Electric Force",
+    e_force_button = button.Button('Electric Force',
                                    pygame.Rect(550, 300, 300, 50),
                                    MOVE_FURTHER_COLOR)
-    int_charge_button = button.Button("Discrete Charges",
+    int_charge_button = button.Button('Discrete Charges',
                                       pygame.Rect(125, 375, 300, 50),
                                       MOVE_FURTHER_COLOR)
-    units_button = button.Button("Units",
+    units_button = button.Button('Units',
                                  pygame.Rect(550, 375, 300, 50),
                                  MOVE_FURTHER_COLOR)
     subscreen_buttons = (mass_spec_intro_button, straight_sec_button,
@@ -143,13 +158,29 @@ def main():
     # game loop
     while True:
         if screen == START:
-            pygame.display.set_caption("Start")
+            pygame.display.set_caption('Start')
 
             for elem in start_screen_elems:
                 elem.draw(window)
+
+            for pos in corman_positions:
+                window.blit(CORMAN_IMAGE, pos)
                 
             for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.KEYDOWN:
+                    # if this was the next key in "corman"
+                    if event.key == CORMAN_NAME[corman_name_index]:
+                        # move "next key" index
+                        corman_name_index += 1
+                        # if full name has been typed generate a new image pos
+                        if corman_name_index == len(CORMAN_NAME):
+                            corman_name_index = 0
+                            corman_positions.append(random_corman_pos())
+                    # any wrong key resets counter
+                    else:
+                        corman_name_index = 0
+                        
+                elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
 
                     # exit button quits simulation
@@ -170,7 +201,7 @@ def main():
                         window.fill(BACKGROUND_COLOR)
 
         elif screen == SIMULATOR:
-            pygame.display.set_caption("Simulator")
+            pygame.display.set_caption('Simulator')
 
             # erase before drawing, so that particle doesn't drag when moving
             window.fill(BACKGROUND_COLOR)
@@ -224,7 +255,7 @@ def main():
                     
                         
         elif screen == INFO:
-            pygame.display.set_caption("Info")
+            pygame.display.set_caption('Info')
 
             for elem in info_screen_elems:
                 elem.draw(window)
