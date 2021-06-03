@@ -1,4 +1,14 @@
-""" charged_particle.py: for a ChargedParticle class """
+"""charged_particle.py: for a ChargedParticle class
+
+Classes:
+ChargedParticle -- for representing a moving charged particle
+
+Constants:
+RADIUS -- radius of a particle
+POSITIVE_COLOR -- color of a particle with a positive (>0) charge
+NEUTRAL_COLOR -- color of a particle with a netural (=0) charge
+NEGATIVE_COLOR -- color of a particle with a negative (<0) charge
+"""
 
 import math
 import pygame
@@ -127,7 +137,6 @@ class ChargedParticle():
         
         pygame.draw.circle(screen, self._color, self._pos, RADIUS)
 
-    @mass.setter
     def set_mass(self, new_mass: int) -> None:
         """Update mass, checking to make sure new value is legal."""
         
@@ -136,7 +145,6 @@ class ChargedParticle():
         else:
             raise ValueError("Mass must be positive")
 
-    @charge.setter
     def set_charge(self, new_charge: int) -> None:
         """Update charge, and then color to correspond."""
         
@@ -160,8 +168,7 @@ class ChargedParticle():
                         RADIUS * 2, RADIUS * 2)
             )
 
-    @property
-    def pos(self) -> (int, int):
+    def get_pos(self) -> (int, int):
         """Get current position."""
         
         return self._pos
