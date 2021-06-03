@@ -6,7 +6,7 @@ import pygame
 # required initialization step
 pygame.init()
 
-# radius of charged particles - constant
+# radius of charged particles
 RADIUS = 5
 
 # the particle will have different colors depending on its charge
@@ -15,52 +15,83 @@ NEUTRAL_COLOR = pygame.Color(144, 144, 144)
 NEGATIVE_COLOR = pygame.Color(204, 29, 6)
 
 class ChargedParticle():
-    """ a charge particle
+    """A class to represent a charged particle.
 
-    Affected by electric and magnetic fields - accelerates accordingly
-    Can draw itself, move, and detect collisions
+    Attributes:
+    _mass -- mass of the particle
+    _charge -- charge of the particle
+    _color -- color of the particle (depends on charge)
+    _velocity -- (x, y) velocity of the particle
+    _pos -- (x, y) position of the particle
+    _stopped -- whether the particle is stopped
+
+    Methods:
+    move -- moves & accelerates the particle
+    draw -- draws the particle on a Surface
+    stop -- forces particle to stop moving (irreversible from outside)
+    set_mass -- sets _mass to a new value
+    set_charge -- sets _charge to a new value, also updating _color
+    is_collision -- checks if the particle has collided with a Rect
+    get_pos -- getter for _pos
     """
 
     def __init__(self, mass: int, charge: int, initial_x_velocity: int,
-                 pos: (int, int)):
-        self.__mass = mass
-        self.set_charge(charge)
-        self.__velocity = (initial_x_velocity, 0)
-        self.__pos = pos
-        # flag to see if movement is allowed
-        self.__stopped = False
+                 pos: (int, int)) -> None:
+        """Initialize a ChargedParticle.
 
-    def move(self, e_field: int, mag_field: int):
-        """ move the charged particle one frame's worth """
+        mass -- mass of the particle
+        charge -- charge of the particle
+        initial_x_velocity -- initial x velocity of the particle (v_y_0 = 0)
+        pos -- initial (x, y) position of the particle
+        """
+        
+        self._mass = mass
+        # will also set color
+        self.set_charge(charge)
+        self._velocity = (initial_x_velocity, 0)
+        self._pos = pos
+        self._stopped = False
+
+    def move(self, e_field: int, mag_field: int) -> None:
+        """Move and accelerate the charged particle one frame's worth.
+
+        e_field -- electric field strength, positive is down
+        mag_field -- magnetic field strength, positive is out of page
+        """
 
         # only move if allowed
-        if not self.__stopped:
+        if not self._stopped:
             # move with current velocity
-            self.__pos = (self.__pos[0] + self.__velocity[0],
-                          self.__pos[1] + self.__velocity[1])
+            self._pos = (self._pos[0] + self._velocity[0],
+                         self._pos[1] + self._velocity[1])
             
             # calculate force on particle
-            electric_force = e_field * self.__charge
-            magnetic_force = self.__calc_mag_force(mag_field)
+            electric_force = e_field * self._charge
+            magnetic_force = self._calc_mag_force(mag_field)
             total_force = (magnetic_force[0],
                            electric_force + magnetic_force[1])
-            # a = F/m
-            acceleration = (total_force[0] / self.__mass,
-                            total_force[1] / self.__mass)
+            # Newton's Second Law, a = F/m
+            acceleration = (total_force[0] / self._mass,
+                            total_force[1] / self._mass)
+            
             # update velocity with acceleration
-            self.__velocity = (self.__velocity[0] + acceleration[0],
-                               self.__velocity[1] + acceleration[1])
+            self._velocity = (self._velocity[0] + acceleration[0],
+                               self._velocity[1] + acceleration[1])
 
-    def __calc_mag_force(self, mag_field: int) -> (int, int):
-        """ Internal helper function for calculating magnetic force
+    def _calc_mag_force(self, mag_field: int) -> (int, int):
+        """Calculate magnetic force on charge
 
         Note that theta is measured clockwise, with 0 = to the right
+
+        mag_field -- magnetic field strength, positive is out of page
+
+        Returns force on the particle in (x, y) direction
         """
 
         # shorter variable names for easy reference
-        v_x, v_y = self.__velocity
+        v_x, v_y = self._velocity
 
-        # find angle which the particle is travelling in
+        # find angle which the particle is travelling in (velocity direction)
         
         # -pi/2 < theta < pi/2
         if v_x > 0:
@@ -76,57 +107,61 @@ class ChargedParticle():
         else:
             theta = (math.pi / 2)
 
-        # use L/R HR to move in correct perpendicular direction
+        # force is perpendicular to velocity
         theta -= math.pi / 2
         # calculate current velocity
         total_v = math.sqrt((v_y * v_y) + (v_x * v_x))
-        # F_M = qvB
-        total_f = self.__charge * total_v * mag_field
+        # F_M = qvB, and use L/R HR
+        total_f = self._charge * total_v * mag_field
 
         # calculate x and y components of magnetic force
         return total_f * math.cos(theta), -1 * (total_f * math.sin(theta))
 
-    def stop(self):
-        """ Set no-moving-allowed flag """
+    def stop(self) -> None:
+        """Set no-moving-allowed flag."""
         
-        self.__stopped = True
+        self._stopped = True
 
-    def draw(self, screen: pygame.Surface):
-        """ Draw particle """
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the particle onto a given Surface."""
         
-        pygame.draw.circle(screen, self.__color, self.__pos, RADIUS)
+        pygame.draw.circle(screen, self._color, self._pos, RADIUS)
 
-    def set_charge(self, new_charge: int):
-        """ Update charge & color """
-        
-        self.__charge = new_charge
-
-        # color is dependent on sign
-        if new_charge > 0:
-            self.__color = POSITIVE_COLOR
-        elif new_charge < 0:
-            self.__color = NEGATIVE_COLOR
-        else:
-            self.__color = NEUTRAL_COLOR
-
-    def set_mass(self, new_mass: int):
-        """ Update mass, checking to make sure new value is legal """
+    @mass.setter
+    def set_mass(self, new_mass: int) -> None:
+        """Update mass, checking to make sure new value is legal."""
         
         if new_mass > 0:
-            self.__mass = new_mass
+            self._mass = new_mass
         else:
             raise ValueError("Mass must be positive")
 
-    def is_collision(self, rect: pygame.Rect):
-        """ Check if particle collides with given rectangle """
+    @charge.setter
+    def set_charge(self, new_charge: int) -> None:
+        """Update charge, and then color to correspond."""
+        
+        self._charge = new_charge
 
+        # color is dependent on sign
+        if new_charge > 0:
+            self._color = POSITIVE_COLOR
+        elif new_charge < 0:
+            self._color = NEGATIVE_COLOR
+        else:
+            self._color = NEUTRAL_COLOR
+
+    
+    def is_collision(self, rect: pygame.Rect) -> bool:
+        """Check if particle collides with given rectangle."""
+        
         # check for collision between rect & particle's collision box
         return rect.colliderect(
-            pygame.Rect(self.__pos[0] - RADIUS, self.__pos[1] - RADIUS,
+            pygame.Rect(self._pos[0] - RADIUS, self._pos[1] - RADIUS,
                         RADIUS * 2, RADIUS * 2)
             )
 
-    def get_pos(self):
-        """ Return current position """
+    @property
+    def pos(self) -> (int, int):
+        """Get current position."""
         
-        return self.__pos
+        return self._pos
