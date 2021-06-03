@@ -1,9 +1,14 @@
 """text.py: for a Text class
 
-Text class -- for easy textbox handling
-TEXT_COLOR -- color that all text will be in
+Classes:
+Text -- for easy textbox handling
+
+Methods:
 paragraphs_to_lines -- convert paragraphs to line-by-line Texts
 get_text_by_center -- generate a text box which is centered on the given point
+
+Constants:
+TEXT_COLOR -- color that all text will be in
 """
 
 import pygame
@@ -33,7 +38,7 @@ class Text():
         text -- string to display
         font -- Font the text is to be displayed in
         area -- Rect where the text should go
-        background_color -- expected background Color for this text
+        background_color -- expected background color for this text
         centered -- whether the text should center itself in its box
                  -- defaults to True
         """
@@ -65,7 +70,7 @@ class Text():
                 )
 
     def draw(self, screen: pygame.Surface):
-        """Draw the text on the designated Surface."""
+        """Draw the text onto a given Surface."""
         
         screen.blit(self._text, self._pos)
 
