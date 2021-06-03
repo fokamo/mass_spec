@@ -109,8 +109,8 @@ def main():
 
     # simulation screen elements
     mass_spec = mass_spectrometer.MassSpectrometer(
-        pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3, WINDOW_SIZE[1]),
-        20, 1, 5, 5, -1) # arbitrarily chosen values for testing purposes
+        5, -1, 20, 1, 5, pygame.Rect(0, 0, 2 * WINDOW_SIZE[0] / 3,
+                                     WINDOW_SIZE[1]))
     reset_button = button.Button("Reset", pygame.Rect(50, 50, 100, 50),
                                  MOVE_FURTHER_COLOR)
 
