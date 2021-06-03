@@ -1,4 +1,4 @@
-""" button.py: for a Button class """
+"""button.py: for a Button class"""
 
 import pygame
 import text, fonts
